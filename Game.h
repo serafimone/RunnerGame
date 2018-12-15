@@ -16,14 +16,16 @@ public:
 			TEST_VELOCITY);
 		m_Display = display;
 		m_CurrentObstacle = nullptr;
-		isGameStopped = false;
+		m_isGameStopped = false;
 	};
+	void draw(bool jump);
+	bool isGameStopped();
 private: 
 	Player m_Player;
-	Obstacle m_Obstacles[2];
+	Obstacle* m_Obstacles;
 	Obstacle* m_CurrentObstacle;
 	U8G2_SSD1306_128X64_NONAME_F_HW_I2C* m_Display;
-	bool isGameStopped;
+	bool m_isGameStopped;
 
 	void drawPlayer();
 	void drawObstacle();

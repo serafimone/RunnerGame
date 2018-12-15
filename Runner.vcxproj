@@ -108,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Asset.h" />
+    <ClInclude Include="Assets.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="ScreenConfig.h" />
     <ClInclude Include="Obstacle.h" />
