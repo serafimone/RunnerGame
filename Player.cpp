@@ -1,30 +1,32 @@
- #include "Player.h"
+#include "Player.h"
 
-bool Player::isOnGround()
+bool player::is_on_ground() const
 {
-	return m_onGround;
+	return m_position_y_ == 0;
 }
 
-void Player::setJump()
+void player::set_jump()
 {
-	if (m_onGround) {
-		m_VelocityY = k_Velocity;
+	if (is_on_ground())
+	{
+		m_velocity_y_ = k_velocity;
 	}
 }
 
-void Player::updateYPosition()
+void player::update_y_position()
 {
-	if (m_onGround) {
-		if (m_VelocityY <= 0) {
-			m_VelocityY = 0;
-			return;
+	if (is_on_ground() && m_velocity_y_ <= 0)
+	{
+		m_velocity_y_ = 0;
+	}
+	else if (!is_on_ground() || m_velocity_y_ > 0)
+	{
+		m_position_y_ += m_velocity_y_;
+		if (m_position_y_ < 0)
+		{
+			m_position_y_ = 0;
 		}
-		else {
-			m_PositionY += m_VelocityY;
-			if (m_PositionY < 0) {
-				m_PositionY= 0;
-			}
-			m_VelocityY -= k_Gravity;
-		}
+		m_velocity_y_ -= k_gravity;
 	}
 }
+

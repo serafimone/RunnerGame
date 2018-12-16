@@ -1,28 +1,44 @@
-class Asset
+#pragma once
+#include <stdint.h>
+#include "ScreenConfig.h"
+
+class asset
 {
 public:
-	Asset() {};
-	Asset(uint8_t x, uint8_t y, uint8_t h, uint8_t w, uint8_t *bitMap);
-	uint8_t getPositionX();
-	uint8_t getPositionY();
-	uint8_t getHeight();
-	uint8_t getWidth();
-	uint8_t* getBitMap();
-	template <typename TRenderer> void Draw(TRenderer* renderer) {
-		int8_t positionYFromGround = k_ScreenHeight - getHeight()- getPositionY();
+	asset(const uint8_t x, const uint8_t y, const uint8_t h, const uint8_t w, uint8_t* bit_map) :
+		m_position_x_(x),
+		m_position_y_(y),
+		m_height_(h),
+		m_width_(w),
+		m_bit_map_(bit_map)
+	{
+	};
+
+	asset(): m_position_x_(0), m_position_y_(0), m_height_(0), m_width_(0), m_bit_map_(nullptr)
+	{
+	} ;
+	int8_t get_position_x() const;
+	int8_t get_position_y() const;
+	uint8_t get_height() const;
+	uint8_t get_width() const;
+	uint8_t* get_bit_map() const;
+
+	template <typename TRenderer>
+	void draw(TRenderer* renderer)
+	{
+		int8_t positionYFromGround = k_screen_height - get_height() - get_position_y();
 		renderer->drawXBM(
-			getPositionX(),
+			get_position_x(),
 			positionYFromGround,
-			getWidth(),
-			getHeight(),
-			getBitmap());
+			get_width(),
+			get_height(),
+			get_bit_map());
 	}
 
-protected: 
-	uint8_t m_PositionX;
-	uint8_t m_PositionY;
-	uint8_t m_Height;
-	uint8_t m_Width;
-	uint8_t *m_bitMap;
+protected:
+	int8_t m_position_x_;
+	int8_t m_position_y_;
+	uint8_t m_height_;
+	uint8_t m_width_;
+	uint8_t* m_bit_map_;
 };
-

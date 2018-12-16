@@ -1,35 +1,33 @@
+#pragma once
 #include "Player.h"
 #include "Obstacle.h"
+#include "U8g2lib.h"
 
-static const int8_t TEST_VELOCITY = 1;
-class Game
+static const int8_t test_velocity = 1;
+
+class game
 {
 public:
-	Game(U8G2_SSD1306_128X64_NONAME_F_HW_I2C* display) {
-		m_Player = Player(k_PlayerPosX, k_ScreenWidth - 1, k_PlayerHeight, k_PlayerWidth, player_bits);
-		m_Obstacles[0] = Obstacle(
-			k_ObstacleStartPosX, 
-			k_ScreenWidth - 1, 
-			k_ObstacleHeight, 
-			k_ObstacleWidth, 
-			mushroom_bits,
-			TEST_VELOCITY);
-		m_Display = display;
-		m_CurrentObstacle = nullptr;
-		m_isGameStopped = false;
-	};
+	static game& instance()
+	{
+		static game g;
+		return g;
+	}
+	game(game const&) = delete;
+	game& operator= (game const&) = delete;
+	game();
 	void draw(bool jump);
-	bool isGameStopped();
-private: 
-	Player m_Player;
-	Obstacle* m_Obstacles;
-	Obstacle* m_CurrentObstacle;
-	U8G2_SSD1306_128X64_NONAME_F_HW_I2C* m_Display;
-	bool m_isGameStopped;
+	bool is_game_stopped() const;
+	static void set_velocity(uint8_t value);
+private:
+	player m_player_;
+	obstacle* m_current_obstacle_;
+	U8G2_SSD1306_128X64_NONAME_F_HW_I2C m_display_;
+	bool m_is_game_stopped_;
 
-	void drawPlayer();
-	void drawObstacle();
-	void updateObstacle();
-	void checkCollision();
+	void draw_player();
+	void draw_obstacle() const;
+	void update_obstacle();
+	void check_collision();
+
 };
-

@@ -1,35 +1,26 @@
 #include "Asset.h"
 
-Asset::Asset(uint8_t x, uint8_t y, uint8_t h, uint8_t w, uint8_t *bitMap)
+int8_t asset::get_position_x() const
 {
-	m_PositionX = x;
-	m_PositionY = y;
-	m_Height = h;
-	m_Width = y;
-	m_bitMap = bitMap;
+	return m_position_x_;
 }
 
-uint8_t Asset::getPositionX()
+int8_t asset::get_position_y() const
 {
-	return uint8_t();
+	return m_position_y_;
 }
 
-uint8_t Asset::getPositionY()
+uint8_t asset::get_height() const
 {
-	return uint8_t();
+	return m_height_;
 }
 
-uint8_t Asset::getHeight()
+uint8_t asset::get_width() const
 {
-	return uint8_t();
+	return m_width_;
 }
 
-uint8_t Asset::getWidth()
+uint8_t* asset::get_bit_map() const
 {
-	return uint8_t();
-}
-
-uint8_t* Asset::getBitMap()
-{
-	return m_bitMap;
+	return m_bit_map_;
 }

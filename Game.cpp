@@ -1,67 +1,93 @@
 #include "Game.h"
-#include "Assets.h"
+#include "GameConfig.h"
 
-void Game::draw(bool jump)
+game::game() :
+	m_current_obstacle_(nullptr),
+	m_display_(U8G2_SSD1306_128X64_NONAME_F_HW_I2C(U8G2_R0)),
+	m_is_game_stopped_(false)
 {
-	m_Display->clearBuffer();
-	if (jump) {
-		m_Player.setJump();
+	m_display_.begin();
+	m_display_.setFlipMode(0);
+	m_player_ = player(k_player_pos_x, 0, k_player_height, k_player_width, player_bits);
+}
+
+
+void game::draw(const bool jump)
+{
+	m_display_.clearBuffer();
+	if (jump)
+	{
+		m_player_.set_jump();
 	}
-	updateObstacle();
-	m_Player.updateYPosition();
-	checkCollision();
-	m_Display->sendBuffer();
+	update_obstacle();
+	draw_obstacle();
+	m_player_.update_y_position();
+	draw_player();
+	check_collision();
+	m_display_.sendBuffer();
 }
 
-bool Game::isGameStopped()
+bool game::is_game_stopped() const
 {
-	return m_isGameStopped;
+	return m_is_game_stopped_;
 }
 
-void Game::drawPlayer()
+void game::set_velocity(const uint8_t value)
 {
-	m_Player.Draw(m_Display);
-}
-
-void Game::drawObstacle()
-{
-	m_CurrentObstacle->Draw(m_Display);
-}
-
-void Game::updateObstacle()
-{
-	if (m_CurrentObstacle == nullptr) {
-		uint8_t random_index = random(0, 2);
-		m_CurrentObstacle = &m_Obstacles[random_index];
-		m_CurrentObstacle->reset();
+	const auto obs = k_obstacles;
+	for (auto i = 0; i < k_obstacles_count; i++)
+	{
+		obs[i].set_velocity(value);
 	}
-	auto offScreen = 0 - m_CurrentObstacle->getWidth();
-	if (m_CurrentObstacle->getPositionX() <= offScreen) {
-		m_CurrentObstacle->reset();
-		m_CurrentObstacle = nullptr;
+}
+
+void game::draw_player()
+{
+	m_player_.draw(&m_display_);
+}
+
+void game::draw_obstacle() const
+{
+	m_current_obstacle_->draw(&m_display_);
+}
+
+void game::update_obstacle()
+{
+	if (m_current_obstacle_ == nullptr)
+	{
+		const uint8_t random_index = 0;
+		m_current_obstacle_ = &k_obstacles[random_index];
+		m_current_obstacle_->reset();
+	}
+	const auto off_screen = 0 - m_current_obstacle_->get_width();
+	if (m_current_obstacle_->get_position_x() <= off_screen)
+	{
+		m_current_obstacle_->reset();
+		m_current_obstacle_ = nullptr;
 		return;
 	}
-	m_CurrentObstacle->updateXPosition();
+	m_current_obstacle_->update_x_position();
 }
-void Game::checkCollision()
+
+void game::check_collision()
 {
-	if (m_CurrentObstacle == nullptr) {
+	if (m_current_obstacle_ == nullptr)
+	{
 		return;
 	}
-	int8_t leftPlayerX = m_Player.getPositionX();
-	int8_t rightPlayerX = m_Player.getPositionX() + m_Player.getWidth();
-	int8_t playerPositionY= m_Player.getPositionY();
+	const auto left_player_x = m_player_.get_position_x();
+	const int8_t right_player_x = m_player_.get_position_x() + m_player_.get_width() - 2;
+	const auto player_position_y = m_player_.get_position_x();
 
-	int8_t leftObstacleX = m_CurrentObstacle->getPositionX();
-	int8_t rightObstacleX = m_CurrentObstacle->getPositionX()+ m_CurrentObstacle->getWidth;
+	const auto left_obstacle_x = m_current_obstacle_->get_position_x();
+	const int8_t right_obstacle_x = m_current_obstacle_->get_position_x() + m_current_obstacle_->get_width();
 
-	int8_t top_obstacle = m_CurrentObstacle->getHeight();
+	const auto player_before_obs = right_player_x < left_obstacle_x;
+	const auto player_after_obs = left_player_x > right_obstacle_x;
+	const auto player_above_obs = player_position_y > m_current_obstacle_->get_height();
 
-	bool playerBeforeObs = rightPlayerX < leftObstacleX;
-	bool playerAfterObs = leftPlayerX > rightObstacleX;
-	bool playerAboveObs = playerPositionY> top_obstacle;
+	const auto player_collides_x_obstacle = !player_before_obs && !player_after_obs;
 
-	bool player_collides_x_obstacle = !playerBeforeObs && !playerAfterObs;
-
-	m_isGameStopped = player_collides_x_obstacle && !playerAboveObs;
+	m_is_game_stopped_ = player_collides_x_obstacle && !player_above_obs;
 }
+	
