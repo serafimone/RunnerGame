@@ -7,18 +7,24 @@
 #include <Wire.h>
 #endif
 
-game* instance;
+Game* instance;
 
 void setup() {
 	Serial.begin(9600);
-	game::instance().set_velocity(4);  // NOLINT(readability-static-accessed-through-instance)
+	//TODO: Remove hardcode 
+	Game::instance().set_velocity(4);  // NOLINT(readability-static-accessed-through-instance)
 }
 
 void loop() {
+	if (Game::instance().is_game_stopped())
+	{
+		Game::instance().draw_logo();
+		return;
+	}	
 	auto val = false;
 	if (Serial.available())
 	{
 		val = Serial.read() == '1';
 	}
-	game::instance().draw(val);
+	Game::instance().draw(val);
 }

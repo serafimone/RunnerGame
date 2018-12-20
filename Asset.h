@@ -2,10 +2,10 @@
 #include <stdint.h>
 #include "ScreenConfig.h"
 
-class asset
+class Asset
 {
 public:
-	asset(const uint8_t x, const uint8_t y, const uint8_t h, const uint8_t w, uint8_t* bit_map) :
+	Asset(const uint8_t x, const uint8_t y, const uint8_t h, const uint8_t w, uint8_t* bit_map) :
 		m_position_x_(x),
 		m_position_y_(y),
 		m_height_(h),
@@ -14,7 +14,7 @@ public:
 	{
 	};
 
-	asset(): m_position_x_(0), m_position_y_(0), m_height_(0), m_width_(0), m_bit_map_(nullptr)
+	Asset(): m_position_x_(0), m_position_y_(0), m_height_(0), m_width_(0), m_bit_map_(nullptr)
 	{
 	} ;
 	int8_t get_position_x() const;

@@ -1,21 +1,21 @@
 #include "Obstacle.h"
 
-int8_t obstacle::get_velocity() const
+int8_t Obstacle::get_velocity() const
 {
 	return m_velocity_;
 }
 
-void obstacle::update_x_position()
+void Obstacle::update_x_position()
 {
 	m_position_x_-= m_velocity_;
 }
 
-void obstacle::reset()
+void Obstacle::reset()
 {
-	m_position_x_= k_screen_width - get_width();
+	m_position_x_= k_screen_width - get_width() - 2;
 }
 
-void obstacle::set_velocity(const uint8_t value)
+void Obstacle::set_velocity(const uint8_t value)
 {
 	m_velocity_ = value;
 

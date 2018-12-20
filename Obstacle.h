@@ -1,15 +1,15 @@
 #pragma once
 #include "Asset.h"
 
-class obstacle : public asset
+class Obstacle : public Asset
 {
 public:
-	obstacle()
+	Obstacle()
 	{
 	};
 
-	obstacle(const uint8_t x, const uint8_t y, const uint8_t h, const uint8_t w, uint8_t* bit_map,
-	         const int8_t velocity) : asset(x, y, h, w, bit_map)
+	Obstacle(const uint8_t x, const uint8_t y, const uint8_t h, const uint8_t w, uint8_t* bit_map,
+	         const int8_t velocity) : Asset(x, y, h, w, bit_map)
 	{
 		m_velocity_ = velocity;
 	};

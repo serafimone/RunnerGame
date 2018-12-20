@@ -1,11 +1,11 @@
 #include "Player.h"
 
-bool player::is_on_ground() const
+bool Player::is_on_ground() const
 {
 	return m_position_y_ == 0;
 }
 
-void player::set_jump()
+void Player::set_jump()
 {
 	if (is_on_ground())
 	{
@@ -13,7 +13,7 @@ void player::set_jump()
 	}
 }
 
-void player::update_y_position()
+void Player::update_y_position()
 {
 	if (is_on_ground() && m_velocity_y_ <= 0)
 	{
@@ -28,5 +28,11 @@ void player::update_y_position()
 		}
 		m_velocity_y_ -= k_gravity;
 	}
+}
+
+void Player::reset()
+{
+	m_position_x_ = 0;
+	m_position_y_ = 0;
 }
 

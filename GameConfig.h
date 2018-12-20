@@ -1,6 +1,7 @@
-//Player
 #ifndef ASSETS_H
 #define ASSETS_H
+static const uint8_t k_objects_y = 0;
+//Player
 static const uint8_t k_player_height = 30;
 static const uint8_t k_player_width = 31;
 static const uint8_t k_player_pos_x = 0;
@@ -29,8 +30,8 @@ static uint8_t cactus_bits[] = {
 	0x80, 0x3F, 0x00, 0x80, 0x3F, 0x00, 0x80, 0x3F, 0x00, };
 
 static uint8_t k_obstacles_count = 1;
-static obstacle k_obstacles[]= {
-	obstacle(k_obstacle_start_pos_x, 0, k_obstacle_height, k_obstacle_width, cactus_bits, 0)
+static Obstacle k_obstacles[]= {
+	Obstacle(k_obstacle_start_pos_x, k_objects_y, k_obstacle_height, k_obstacle_width, cactus_bits, 0)
 };
 
 #endif // ASSETS_H

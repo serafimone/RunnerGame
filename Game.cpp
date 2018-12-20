@@ -1,22 +1,31 @@
 #include "Game.h"
 #include "GameConfig.h"
 
-game::game() :
+Game::Game() :
 	m_current_obstacle_(nullptr),
 	m_display_(U8G2_SSD1306_128X64_NONAME_F_HW_I2C(U8G2_R0)),
-	m_is_game_stopped_(false)
+	m_is_game_stopped_(false),
+	m_buzzer_pin_(7)
 {
 	m_display_.begin();
 	m_display_.setFlipMode(0);
-	m_player_ = player(k_player_pos_x, 0, k_player_height, k_player_width, player_bits);
+	m_display_.setFont(u8g2_font_artossans8_8r);
+	m_player_ = Player(k_player_pos_x, k_objects_y, k_player_height, k_player_width, player_bits);
+
+}
+
+void Game::start()
+{
+	m_is_game_stopped_ = false;
 }
 
 
-void game::draw(const bool jump)
+void Game::draw(const bool jump)
 {
 	m_display_.clearBuffer();
 	if (jump)
 	{
+		generate_jump_sound();
 		m_player_.set_jump();
 	}
 	update_obstacle();
@@ -27,12 +36,23 @@ void game::draw(const bool jump)
 	m_display_.sendBuffer();
 }
 
-bool game::is_game_stopped() const
+void Game::draw_logo()
+{
+	m_display_.clearBuffer();
+	m_display_.drawStr(28, 16, "DinoRunner");
+	m_player_.reset();
+	draw_player();
+	m_current_obstacle_->reset();
+	draw_obstacle();
+	m_display_.sendBuffer();
+}
+
+bool Game::is_game_stopped() const
 {
 	return m_is_game_stopped_;
 }
 
-void game::set_velocity(const uint8_t value)
+void Game::set_velocity(const uint8_t value)
 {
 	const auto obs = k_obstacles;
 	for (auto i = 0; i < k_obstacles_count; i++)
@@ -41,17 +61,26 @@ void game::set_velocity(const uint8_t value)
 	}
 }
 
-void game::draw_player()
+void Game::set_is_game_stopped(const bool value)
+{
+	if (value)
+	{
+		generate_game_over_sound();
+	}
+	m_is_game_stopped_ = value;
+}
+
+void Game::draw_player()
 {
 	m_player_.draw(&m_display_);
 }
 
-void game::draw_obstacle() const
+void Game::draw_obstacle() const
 {
 	m_current_obstacle_->draw(&m_display_);
 }
 
-void game::update_obstacle()
+void Game::update_obstacle()
 {
 	if (m_current_obstacle_ == nullptr)
 	{
@@ -60,7 +89,7 @@ void game::update_obstacle()
 		m_current_obstacle_->reset();
 	}
 	const auto off_screen = 0 - m_current_obstacle_->get_width();
-	if (m_current_obstacle_->get_position_x() <= off_screen)
+	if (m_current_obstacle_->get_position_x() < off_screen)
 	{
 		m_current_obstacle_->reset();
 		m_current_obstacle_ = nullptr;
@@ -69,18 +98,18 @@ void game::update_obstacle()
 	m_current_obstacle_->update_x_position();
 }
 
-void game::check_collision()
+void Game::check_collision()
 {
 	if (m_current_obstacle_ == nullptr)
 	{
 		return;
 	}
 	const auto left_player_x = m_player_.get_position_x();
-	const int8_t right_player_x = m_player_.get_position_x() + m_player_.get_width() - 2;
-	const auto player_position_y = m_player_.get_position_x();
+	const int8_t right_player_x = m_player_.get_position_x() + m_player_.get_width() - m_player_.get_width() * 0.2;
+	const auto player_position_y = m_player_.get_position_y();
 
 	const auto left_obstacle_x = m_current_obstacle_->get_position_x();
-	const int8_t right_obstacle_x = m_current_obstacle_->get_position_x() + m_current_obstacle_->get_width();
+	const int8_t right_obstacle_x = m_current_obstacle_->get_position_x() + m_current_obstacle_->get_width() - m_player_.get_width() * 0.2;
 
 	const auto player_before_obs = right_player_x < left_obstacle_x;
 	const auto player_after_obs = left_player_x > right_obstacle_x;
@@ -88,6 +117,23 @@ void game::check_collision()
 
 	const auto player_collides_x_obstacle = !player_before_obs && !player_after_obs;
 
-	m_is_game_stopped_ = player_collides_x_obstacle && !player_above_obs;
+	set_is_game_stopped(player_collides_x_obstacle && !player_above_obs);
 }
-	
+
+void Game::generate_jump_sound() const
+{
+	analogWrite(m_buzzer_pin_, 10);
+	delay(10);
+	analogWrite(m_buzzer_pin_, 255);
+	delay(5);
+	analogWrite(m_buzzer_pin_, 10);
+	delay(10);
+	analogWrite(m_buzzer_pin_, 255);
+}
+
+void Game::generate_game_over_sound() const
+{
+	analogWrite(m_buzzer_pin_, 10);
+	delay(500);
+	analogWrite(m_buzzer_pin_, 255);
+}
