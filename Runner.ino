@@ -10,6 +10,7 @@
 Game* instance;
 
 void setup() {
+	
 	Serial.begin(9600);
 	//TODO: Remove hardcode 
 	Game::instance().set_velocity(4);  // NOLINT(readability-static-accessed-through-instance)
@@ -20,11 +21,11 @@ void loop() {
 	{
 		Game::instance().draw_logo();
 		return;
-	}	
+	}
 	auto val = false;
 	if (Serial.available())
 	{
-		val = Serial.read() == '1';
+		val = Serial.read() == '!';
 	}
 	Game::instance().draw(val);
 }

@@ -39,7 +39,7 @@
     <ClInclude Include="ScreenConfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Assets.h">
+    <ClInclude Include="GameConfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

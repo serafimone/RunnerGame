@@ -15,41 +15,41 @@ import java.io.IOException
 
 class GameActivity : AppCompatActivity() {
 
-    private var mBtnJump: ImageButton? = null
-    private var mBluetoothService: BluetoothService? = null
+    private var btnJump: ImageButton? = null
+    private var bluetoothService: BluetoothService? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
         val intent = getIntent()
-        mBluetoothService = BluetoothService()
-        mBtnJump = findViewById(R.id.btnJump)
-        mBtnJump!!.isEnabled = false
+        bluetoothService = BluetoothService()
+        btnJump = findViewById(R.id.btnJump)
+        btnJump!!.isEnabled = false
         setOnBtnJumpClick()
         val deviceMAC = intent.getStringExtra("mac")
         val game = GameTask()
         if (tryConnect(deviceMAC) && startGame()){
-            mBtnJump!!.isEnabled = true
+            btnJump!!.isEnabled = true
             game.execute()
         }
     }
 
-    fun tryConnect(deviceMAC: String):Boolean{
-        if(mBluetoothService!!.checkBluetooth(this))
-            return mBluetoothService!!.getConnection(deviceMAC, this)
+    private fun tryConnect(deviceMAC: String):Boolean{
+        if(bluetoothService!!.checkBluetooth(this))
+            return bluetoothService!!.getConnection(deviceMAC, this)
         return false
     }
 
-    fun setOnBtnJumpClick(){
-        mBtnJump!!.setOnClickListener {
-            mBluetoothService!!.sendMessage(Constants.JUMP_SENT_MSG)
+    private fun setOnBtnJumpClick(){
+        btnJump!!.setOnClickListener {
+            bluetoothService!!.sendMessage(Constants.JUMP_SENT_MSG)
         }
     }
 
-    fun startGame(): Boolean {
+    private fun startGame(): Boolean {
         try {
             val message = (Companion.speed.toString()+Companion.opponent.toString()).toByteArray()
-            mBluetoothService!!.sendMessage(message)  //Settings sent. Game started!
+            //bluetoothService!!.sendMessage(message)  //Settings sent. Game started!
             Toast.makeText(this@GameActivity, Constants.MSG_GAME_STARTED, Toast.LENGTH_LONG).show()
             return true
         } catch (e: IOException) {
@@ -72,7 +72,7 @@ class GameActivity : AppCompatActivity() {
             var messageSize = 0
             while(messageSize == 0) {
                 try {
-                    messageSize = mBluetoothService!!.readMessage()
+                    messageSize = bluetoothService!!.readMessage()
                 } catch (e: Exception) {
                 }
             }
@@ -86,9 +86,9 @@ class GameActivity : AppCompatActivity() {
 
         private fun gameOver(){
             mTime!!.stop()
-            mBtnJump!!.isEnabled = false
+            btnJump!!.isEnabled = false
             Toast.makeText(this@GameActivity, Constants.MSG_GAME_OVER, Toast.LENGTH_LONG).show()
-            mBluetoothService!!.stopService()
+            bluetoothService!!.stopService()
             val intent = Intent(this@GameActivity, MainActivity::class.java)
             startActivity(intent)
         }

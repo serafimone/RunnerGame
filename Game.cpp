@@ -10,7 +10,7 @@ Game::Game() :
 	m_display_.begin();
 	m_display_.setFlipMode(0);
 	m_display_.setFont(u8g2_font_artossans8_8r);
-	m_player_ = Player(k_player_pos_x, k_objects_y, k_player_height, k_player_width, player_bits);
+	m_player_ = Player(k_player_pos_x, k_objects_start_y, k_player_height, k_player_width, player_bits);
 
 }
 
