@@ -7,32 +7,32 @@
         android:layout_height="match_parent"
         tools:context=".activity.SettingsActivity">
 
-    <TextView android:layout_width="210dp" android:layout_height="44dp"
-              android:layout_marginTop="8dp"
-              app:layout_constraintTop_toTopOf="parent" android:layout_marginBottom="8dp"
+    <TextView android:layout_width="210dp" android:layout_height="34dp"
+              android:layout_marginBottom="8dp"
               app:layout_constraintBottom_toTopOf="@+id/opponent_spinner" app:layout_constraintEnd_toEndOf="parent"
               android:layout_marginEnd="8dp" android:layout_marginRight="8dp"
               app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
               android:layout_marginStart="8dp"
-              app:layout_constraintVertical_bias="0.484" android:text="@string/txt_opponent"/>
+              android:text="@string/txt_opponent" android:textSize="18sp" android:layout_marginTop="8dp"
+              app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_bias="0.842"/>
 
     <Spinner android:id="@+id/opponent_spinner"
-             android:layout_width="233dp" android:layout_height="45dp"
+             android:layout_width="233dp" android:layout_height="38dp"
              android:layout_marginEnd="8dp"
              app:layout_constraintEnd_toEndOf="parent" android:layout_marginRight="8dp"
              app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
              android:layout_marginStart="8dp" app:layout_constraintHorizontal_bias="0.503"
-             android:layout_marginTop="156dp" app:layout_constraintTop_toTopOf="parent">
+             android:layout_marginTop="136dp" app:layout_constraintTop_toTopOf="parent">
 
     </Spinner>
 
-    <TextView android:layout_width="210dp" android:layout_height="47dp"
+    <TextView android:layout_width="210dp" android:layout_height="41dp"
               app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
               android:layout_marginRight="8dp" app:layout_constraintStart_toStartOf="parent"
               android:layout_marginLeft="8dp" android:layout_marginStart="8dp"
-              android:layout_marginTop="48dp" app:layout_constraintTop_toBottomOf="@+id/opponent_spinner"
+              android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/opponent_spinner"
               android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/speed_spinner"
-              app:layout_constraintVertical_bias="0.0" android:text="@string/txt_speed"/>
+              app:layout_constraintVertical_bias="0.682" android:text="@string/txt_speed" android:textSize="18sp"/>
 
     <Spinner android:id="@+id/speed_spinner"
              android:layout_width="233dp" android:layout_height="45dp"
@@ -40,7 +40,7 @@
              app:layout_constraintEnd_toEndOf="parent" android:layout_marginRight="8dp"
              app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
              android:layout_marginStart="8dp" app:layout_constraintHorizontal_bias="0.503"
-             tools:layout_editor_absoluteY="344dp">
+             android:layout_marginBottom="172dp" app:layout_constraintBottom_toBottomOf="parent">
 
     </Spinner>
 
@@ -52,6 +52,6 @@
             android:layout_marginEnd="8dp" android:layout_marginRight="8dp"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp" android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/speed_spinner" app:layout_constraintVertical_bias="1.0"/>
+            app:layout_constraintTop_toBottomOf="@+id/speed_spinner" app:layout_constraintVertical_bias="0.783"/>
 
 </android.support.constraint.ConstraintLayout>

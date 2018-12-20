@@ -7,28 +7,55 @@ import android.support.v7.app.AppCompatActivity
 import android.widget.Chronometer
 import android.widget.ImageButton
 import android.widget.Toast
-import com.arduinogame.Constants
 import com.arduinogame.R
-import com.arduinogame.activity.DeviceConnectionActivity.Companion.mBluetoothSocket as socket
-
+import com.arduinogame.tools.BluetoothService
+import com.arduinogame.tools.Constants
+import com.arduinogame.tools.Settings.Companion
+import java.io.IOException
 
 class GameActivity : AppCompatActivity() {
 
     private var mBtnJump: ImageButton? = null
+    private var mBluetoothService: BluetoothService? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
-        onBtnJumpClick()
-        val game = GameTask()
-        game.execute()
-   }
-
-    fun onBtnJumpClick(){
+        val intent = getIntent()
+        mBluetoothService = BluetoothService()
         mBtnJump = findViewById(R.id.btnJump)
-        mBtnJump!!.setOnClickListener {
-            socket!!.outputStream.write(Constants.JUMP_SENT_MSG)
+        mBtnJump!!.isEnabled = false
+        setOnBtnJumpClick()
+        val deviceMAC = intent.getStringExtra("mac")
+        val game = GameTask()
+        if (tryConnect(deviceMAC) && startGame()){
+            mBtnJump!!.isEnabled = true
+            game.execute()
         }
+    }
+
+    fun tryConnect(deviceMAC: String):Boolean{
+        if(mBluetoothService!!.checkBluetooth(this))
+            return mBluetoothService!!.getConnection(deviceMAC, this)
+        return false
+    }
+
+    fun setOnBtnJumpClick(){
+        mBtnJump!!.setOnClickListener {
+            mBluetoothService!!.sendMessage(Constants.JUMP_SENT_MSG)
+        }
+    }
+
+    fun startGame(): Boolean {
+        try {
+            val message = (Companion.speed.toString()+Companion.opponent.toString()).toByteArray()
+            mBluetoothService!!.sendMessage(message)  //Settings sent. Game started!
+            Toast.makeText(this@GameActivity, Constants.MSG_GAME_STARTED, Toast.LENGTH_LONG).show()
+            return true
+        } catch (e: IOException) {
+
+        }
+        return false
     }
 
     internal inner class GameTask : AsyncTask<Void, Void, Void>() {
@@ -45,7 +72,7 @@ class GameActivity : AppCompatActivity() {
             var messageSize = 0
             while(messageSize == 0) {
                 try {
-                    messageSize = DeviceConnectionActivity.mBluetoothSocket!!.inputStream.read()
+                    messageSize = mBluetoothService!!.readMessage()
                 } catch (e: Exception) {
                 }
             }
@@ -61,11 +88,12 @@ class GameActivity : AppCompatActivity() {
             mTime!!.stop()
             mBtnJump!!.isEnabled = false
             Toast.makeText(this@GameActivity, Constants.MSG_GAME_OVER, Toast.LENGTH_LONG).show()
-            socket!!.close()
+            mBluetoothService!!.stopService()
             val intent = Intent(this@GameActivity, MainActivity::class.java)
             startActivity(intent)
         }
     }
 
-
 }
+
+

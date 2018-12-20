@@ -6,8 +6,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import com.arduinogame.Constants
 import com.arduinogame.R
+import com.arduinogame.tools.Constants
+import com.arduinogame.tools.Settings.Companion
 import kotlinx.android.synthetic.main.activity_settings.*
 
 class SettingsActivity : AppCompatActivity() {
@@ -29,22 +30,22 @@ class SettingsActivity : AppCompatActivity() {
     fun setListeners(){
         opponent_spinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                opponent = 0
+                Companion.opponent = 0
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                opponent = position
+                Companion.opponent = position
             }
 
         }
 
         speed_spinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                speed = 0
+                Companion.speed = 0
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                speed = position
+                Companion.speed = position
             }
         }
     }
@@ -54,8 +55,4 @@ class SettingsActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    companion object {
-        var opponent = 0
-        var speed = 0
-    }
 }

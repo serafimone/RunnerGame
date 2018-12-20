@@ -10,6 +10,6 @@
     <string name="btn_save_settings">Save</string>
     <string name="start_search">Start search devices</string>
     <string name="start_control">Game!</string>
-    <string name="txt_opponent">Select opponent</string>
-    <string name="txt_speed">Select speed</string>
+    <string name="txt_opponent">Opponent</string>
+    <string name="txt_speed">Speed</string>
 </resources>
