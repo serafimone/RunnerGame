@@ -2,20 +2,23 @@
 #include "GameConfig.h"
 
 Game::Game() :
-	m_current_obstacle_(nullptr),
+	m_current_obstacle_(&k_obstacles[0]),
 	m_display_(U8G2_SSD1306_128X64_NONAME_F_HW_I2C(U8G2_R0)),
-	m_is_game_stopped_(false),
-	m_buzzer_pin_(7)
+	m_is_game_stopped_(true),
+	m_buzzer_pin_(7),
+	m_obstacle_pos_(0)
 {
 	m_display_.begin();
 	m_display_.setFlipMode(0);
 	m_display_.setFont(u8g2_font_artossans8_8r);
-	m_player_ = Player(k_player_pos_x, k_objects_start_y, k_player_height, k_player_width, player_bits);
+	m_player_ = Player(k_player_pos_x, 0, k_player_height, k_player_width, player_bits);
 
 }
 
-void Game::start()
+void Game::start(const uint8_t obstacle_pos, const uint8_t speed)
 {
+	set_velocity(speed);
+	m_obstacle_pos_ = obstacle_pos;
 	m_is_game_stopped_ = false;
 }
 
@@ -66,6 +69,7 @@ void Game::set_is_game_stopped(const bool value)
 	if (value)
 	{
 		generate_game_over_sound();
+		Serial.write(1);
 	}
 	m_is_game_stopped_ = value;
 }
@@ -84,8 +88,8 @@ void Game::update_obstacle()
 {
 	if (m_current_obstacle_ == nullptr)
 	{
-		const uint8_t random_index = 0;
-		m_current_obstacle_ = &k_obstacles[random_index];
+		const uint8_t index = m_obstacle_pos_ < 2 ? m_obstacle_pos_ : random(0, k_obstacles_count);
+		m_current_obstacle_ = &k_obstacles[index];
 		m_current_obstacle_->reset();
 	}
 	const auto off_screen = 0 - m_current_obstacle_->get_width();

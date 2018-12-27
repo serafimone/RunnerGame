@@ -13,9 +13,13 @@ interface Constants {
         const val MSG_GAME_OVER = "Game over!"
         const val MSG_GAME_STARTED = "GO!"
 
-        val SPEED_ARRAY = arrayOf("low speed", "middle speed", "high speed")
-        val OPPONENTS_ARRAY = arrayOf("cactus", "mushroom")
-        val CONNECTION_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb")
+        val SPEED_ARRAY = Speed.values()
+            .map { element -> element.toString()}
+            .toTypedArray()
+        val OPPONENTS_ARRAY = Obstacles.values()
+            .map { element -> element.toString()}
+            .toTypedArray()
+        val CONNECTION_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb")!!
         val JUMP_SENT_MSG = "!".toByteArray()
     }
 }

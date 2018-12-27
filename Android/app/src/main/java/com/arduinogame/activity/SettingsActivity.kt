@@ -8,7 +8,9 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.arduinogame.R
 import com.arduinogame.tools.Constants
-import com.arduinogame.tools.Settings.Companion
+import com.arduinogame.tools.Obstacles
+import com.arduinogame.tools.SettingsParams
+import com.arduinogame.tools.Speed
 import kotlinx.android.synthetic.main.activity_settings.*
 
 class SettingsActivity : AppCompatActivity() {
@@ -20,32 +22,36 @@ class SettingsActivity : AppCompatActivity() {
         setListeners()
     }
 
-    fun setAdapters() {
+    private fun setAdapters() {
         val opponentsAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, Constants.OPPONENTS_ARRAY)
         val speedAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, Constants.SPEED_ARRAY)
         opponent_spinner.adapter = opponentsAdapter
+        opponent_spinner.setSelection(opponentsAdapter.getPosition(SettingsParams.Instance.getValueByKey("obstacle")!!.toString()))
         speed_spinner.adapter = speedAdapter
+        speed_spinner.setSelection(speedAdapter.getPosition(SettingsParams.Instance.getValueByKey("speed")!!.toString()))
     }
 
-    fun setListeners(){
+    private fun setListeners(){
         opponent_spinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                Companion.opponent = 0
+                SettingsParams.Instance.add("obstacle", Obstacles.Cactus)
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                Companion.opponent = position
+                val item = parent!!.getItemAtPosition(position).toString()
+                SettingsParams.Instance.add("obstacle", Obstacles.valueOf(item))
             }
 
         }
 
         speed_spinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                Companion.speed = 0
+                SettingsParams.Instance.add("speed", Speed.Low)
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                Companion.speed = position
+                val item = parent!!.getItemAtPosition(position).toString()
+                SettingsParams.Instance.add("speed", Speed.valueOf(item))
             }
         }
     }

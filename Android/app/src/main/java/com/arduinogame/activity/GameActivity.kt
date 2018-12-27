@@ -1,5 +1,6 @@
 package com.arduinogame.activity
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
@@ -10,7 +11,7 @@ import android.widget.Toast
 import com.arduinogame.R
 import com.arduinogame.tools.BluetoothService
 import com.arduinogame.tools.Constants
-import com.arduinogame.tools.Settings.Companion
+import com.arduinogame.tools.SettingsParams
 import java.io.IOException
 
 class GameActivity : AppCompatActivity() {
@@ -21,7 +22,7 @@ class GameActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
-        val intent = getIntent()
+        val intent = intent
         bluetoothService = BluetoothService()
         btnJump = findViewById(R.id.btnJump)
         btnJump!!.isEnabled = false
@@ -48,17 +49,19 @@ class GameActivity : AppCompatActivity() {
 
     private fun startGame(): Boolean {
         try {
-            val message = (Companion.speed.toString()+Companion.opponent.toString()).toByteArray()
-            //bluetoothService!!.sendMessage(message)  //Settings sent. Game started!
+            bluetoothService!!.sendMessage(SettingsParams.Instance.getValueByKey("speed")!!.toInt())
+            bluetoothService!!.sendMessage((SettingsParams.Instance.getValueByKey("obstacle")!!.toInt()))
+
             Toast.makeText(this@GameActivity, Constants.MSG_GAME_STARTED, Toast.LENGTH_LONG).show()
             return true
         } catch (e: IOException) {
-
+            Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
         }
         return false
     }
 
-    internal inner class GameTask : AsyncTask<Void, Void, Void>() {
+    @SuppressLint("StaticFieldLeak")
+    internal inner class GameTask : AsyncTask<Void, Void, Int>() {
 
         private var mTime: Chronometer? = null
 
@@ -68,7 +71,7 @@ class GameActivity : AppCompatActivity() {
             mTime!!.start()
         }
 
-        override fun doInBackground(vararg params: Void): Void? {
+        override fun doInBackground(vararg params: Void?): Int? {
             var messageSize = 0
             while(messageSize == 0) {
                 try {
@@ -76,10 +79,11 @@ class GameActivity : AppCompatActivity() {
                 } catch (e: Exception) {
                 }
             }
-            return null
+
+            return 1
         }
 
-        override fun onPostExecute(result: Void) {
+        override fun onPostExecute(result: Int) {
             super.onPostExecute(result)
             gameOver()
         }
@@ -88,7 +92,6 @@ class GameActivity : AppCompatActivity() {
             mTime!!.stop()
             btnJump!!.isEnabled = false
             Toast.makeText(this@GameActivity, Constants.MSG_GAME_OVER, Toast.LENGTH_LONG).show()
-            bluetoothService!!.stopService()
             val intent = Intent(this@GameActivity, MainActivity::class.java)
             startActivity(intent)
         }

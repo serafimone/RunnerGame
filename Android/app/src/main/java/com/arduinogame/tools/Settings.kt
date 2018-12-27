@@ -1,8 +1,24 @@
 package com.arduinogame.tools
 
-interface Settings {
+class SettingsParams {
+    private var values : HashMap<String, EnumBase> = HashMap()
+
+    init {
+        values["obstacle"] = Obstacles.Mushroom
+        values["speed"] = Speed.Low
+    }
+
+    private object Holder {val INSTANCE = SettingsParams()}
+
     companion object {
-        var opponent = 0
-        var speed = 0
+        val Instance : SettingsParams by lazy { Holder.INSTANCE }
+    }
+
+    fun add(key : String, value: EnumBase) {
+        values[key] = value
+    }
+
+    fun getValueByKey(key: String) : EnumBase? {
+        return values[key]
     }
 }

@@ -16,7 +16,7 @@ public:
 	Game(Game const&) = delete;
 	Game& operator= (Game const&) = delete;
 	Game();
-	void start();
+	void start(uint8_t obstacle_pos, uint8_t speed);
 	void draw(bool jump);
 	void draw_logo();
 	bool is_game_stopped() const;
@@ -27,6 +27,7 @@ private:
 	U8G2_SSD1306_128X64_NONAME_F_HW_I2C m_display_;
 	bool m_is_game_stopped_;
 	uint8_t m_buzzer_pin_;
+	int8_t m_obstacle_pos_;
 
 	void set_is_game_stopped(bool value);
 	void draw_player();

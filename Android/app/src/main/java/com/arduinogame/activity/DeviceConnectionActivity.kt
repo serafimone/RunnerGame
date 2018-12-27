@@ -29,12 +29,12 @@ class DeviceConnectionActivity : AppCompatActivity() {
             selectedMac = adapter[position].split(Constants.DELIM)[0]
             buttonStart.isEnabled = true
         }
-        buttonSearch.setOnClickListener({
+        buttonSearch.setOnClickListener {
             onSearchClick()
-        })
-        buttonStart.setOnClickListener({
+        }
+        buttonStart.setOnClickListener {
             onStartGameClick()
-        })
+        }
     }
 
     private fun onSearchClick() {

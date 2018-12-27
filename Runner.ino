@@ -1,3 +1,5 @@
+#include <ArduinoJson.hpp>
+#include <ArduinoJson.h>
 #include <U8x8lib.h>
 #include "Game.h"
 #include "U8g2lib.h"
@@ -8,18 +10,24 @@
 #endif
 
 Game* instance;
+StaticJsonBuffer<2> buffer;
+
 
 void setup() {
 	
 	Serial.begin(9600);
-	//TODO: Remove hardcode 
-	Game::instance().set_velocity(4);  // NOLINT(readability-static-accessed-through-instance)
 }
 
 void loop() {
 	if (Game::instance().is_game_stopped())
 	{
 		Game::instance().draw_logo();
+		if (Serial.available())
+		{
+			const uint8_t speed = Serial.read();
+			const uint8_t obstacle = Serial.read();
+			Game::instance().start(obstacle, speed);
+		}
 		return;
 	}
 	auto val = false;

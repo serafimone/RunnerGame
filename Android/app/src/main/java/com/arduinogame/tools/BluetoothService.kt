@@ -33,6 +33,10 @@ class BluetoothService {
         mBluetoothSocket!!.outputStream.write(msg)
     }
 
+    fun sendMessage(msg : Int) {
+        mBluetoothSocket!!.outputStream.write(msg)
+    }
+
     fun readMessage(): Int{
         return mBluetoothSocket!!.inputStream.read()
     }
@@ -60,7 +64,7 @@ class BluetoothService {
     }
 
     fun findDevices(context: Context): MutableList<String> {
-        var mAdapter = mutableListOf<String>()
+        val mAdapter = mutableListOf<String>()
         mPairedDevices = mBluetoothAdapter!!.bondedDevices
         if (mPairedDevices!!.isNotEmpty()) {
             for (device: BluetoothDevice in mPairedDevices!!)
