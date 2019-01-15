@@ -1,5 +1,3 @@
-#include <ArduinoJson.hpp>
-#include <ArduinoJson.h>
 #include <U8x8lib.h>
 #include "Game.h"
 #include "U8g2lib.h"
@@ -10,7 +8,6 @@
 #endif
 
 Game* instance;
-StaticJsonBuffer<2> buffer;
 
 
 void setup() {
