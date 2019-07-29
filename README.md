@@ -1,3 +1,5 @@
+# Structure
+
 This game uses arduino as platform.
 
 Project consist two parts Android and Arduino.
